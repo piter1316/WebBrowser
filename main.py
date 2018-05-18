@@ -6,26 +6,39 @@ from PyQt5.QtGui import *
 from PyQt5.QtWebEngineWidgets import *
 from PyQt5.QtWidgets import *
 
+#from NavBar import NavBar
+from SettingsWindow import SettingsWindow
+
 
 class MainWindow(QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
+        self.window_title = "FLAME HOUND"
+        self.setWindowTitle(self.window_title)
+        self.setWindowIcon(QIcon(os.path.join('images', 'logo.png')))
 
-        self.setWindowTitle("WINDY DOG")
-        self.home_url = self.load_home_page()
+        self.home_url = QUrl(self.load_home_page())
+
         self.browser = QWebEngineView()
         self.browser.setUrl(QUrl(self.load_home_page()))
         self.browser.urlChanged.connect(self.update_url_entry_field)
-        self.setCentralWidget(self.browser)
+        self.browser.loadFinished.connect(self.set_title)
 
+
+
+        self.setCentralWidget(self.browser)
         navigation_bar = QToolBar()
         self.addToolBar(navigation_bar)
 
         back_button = QAction(QIcon(os.path.join('images', 'back_button.png')), "COFNIJ", self)
+        back_button.triggered.connect(self.go_back)
         navigation_bar.addAction(back_button)
 
+
+
         forward_button = QAction(QIcon(os.path.join('images', 'go_to_btn.png')), "DO PRZODU", self)
+        forward_button.triggered.connect(self.go_forward)
         navigation_bar.addAction(forward_button)
 
         home_button = QAction(QIcon(os.path.join('images', 'home_btn.png')), "STRONA DOMOWA", self)
@@ -36,20 +49,32 @@ class MainWindow(QMainWindow):
         self.url_entry_field.returnPressed.connect(self.go_to)
         navigation_bar.addWidget(self.url_entry_field)
 
-        go_button = QAction(QIcon(os.path.join('images', 'go_button.png')), "Back", self)
+        go_button = QAction(QIcon(os.path.join('images', 'go_button.png')), "IDŹ DO", self)
+        go_button.triggered.connect(self.go_to)
         navigation_bar.addAction(go_button)
 
-        refresh_button = QAction(QIcon(os.path.join('images', 'refresh_btn.png')), "Back", self)
+        refresh_button = QAction(QIcon(os.path.join('images', 'refresh_btn.png')), "ODŚWIEŻ", self)
+        refresh_button.triggered.connect(self.refresh)
         navigation_bar.addAction(refresh_button)
 
-        stop_button = QAction(QIcon(os.path.join('images', 'stop_button.png')), "Back", self)
+        stop_button = QAction(QIcon(os.path.join('images', 'stop_button.png')), "WSTRZYMAJ", self)
+        stop_button.triggered.connect(self.stop)
         navigation_bar.addAction(stop_button)
 
-        settings_button = QAction(QIcon(os.path.join('images', 'settings_button.png')), "Back", self)
+        settings_button = QAction(QIcon(os.path.join('images', 'settings_button.png')), "OPCJE", self)
         settings_button.triggered.connect(self.open_settings)
         navigation_bar.addAction(settings_button)
 
         self.settings_window = SettingsWindow()
+
+        # settings_bar = NavBar()
+        # self.addToolBar(settings_bar)
+        #settings_bar.hide()
+
+
+        #settings_bar.addAction(settings_button)
+
+
 
     def load_home_page(self):
         try:
@@ -59,6 +84,13 @@ class MainWindow(QMainWindow):
             return url
         except Exception:
             urlSettings = open('home.txt', 'w+')
+            urlSettings.close()
+
+    def go_back(self):
+        self.browser.back()
+
+    def go_forward(self):
+        self.browser.forward()
 
     def go_to(self):
         url = QUrl(self.url_entry_field.text())
@@ -67,6 +99,12 @@ class MainWindow(QMainWindow):
             url.setScheme("http")
 
         self.browser.setUrl(url)
+
+    def stop(self):
+        self.browser.stop()
+
+    def refresh(self):
+        self.browser.reload()
 
     def update_url_entry_field(self, url):
         self.url_entry_field.setText(url.toString())
@@ -78,35 +116,21 @@ class MainWindow(QMainWindow):
     def open_settings(self):
         self.settings_window.show()
 
+    def set_title(self):
+        title = self.browser.page().title()
+        self.setWindowTitle('{} - {}'.format(title, self.window_title))
 
-class SettingsWindow(QMainWindow):
-    def __init__(self):
-        super(QMainWindow, self).__init__()
+    def on_exit(self):
+        exit()
 
-        nav_bar = QToolBar()
-        self.addToolBar(nav_bar)
-        top_label = QLabel()
-        top_label.setText("USTAW STRONĘ DOMOWĄ")
-        nav_bar.addWidget(top_label)
 
-        self.input_home_page = QLineEdit()
-        nav_bar.addWidget(self.input_home_page)
+    def __del__(self):
+        print('del')
 
-        set_button = QAction("USTAW", self)
-        set_button.triggered.connect(self.set_new_home_page)
-        nav_bar.addAction(set_button)
-
-    def set_new_home_page(self, ):
-        home_page_url = self.input_home_page.text()
-        urlSettings = open('home.txt', 'w+')
-        urlSettings.write(home_page_url)
-        urlSettings.close()
 
 
 app = QApplication(sys.argv)
-
 window = MainWindow()
 
 window.show()
-
 app.exec_()

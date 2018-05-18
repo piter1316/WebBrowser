@@ -132,7 +132,7 @@ class MainWindow(QMainWindow):
 
     def update_title(self):
         title = self.browser.page().title()
-        self.setWindowTitle("%s - MooseAche" % title)
+        self.setWindowTitle("{} - MooseAche".format(title))
 
     def navigate_mozarella(self):
         self.browser.setUrl(QUrl("https://www.udemy.com/522076"))
