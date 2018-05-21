@@ -8,7 +8,6 @@ from PyQt5.QtWidgets import *
 
 import HomePageToolBar
 
-
 class MainWindow(QMainWindow):
 
     def __init__(self):
@@ -25,6 +24,8 @@ class MainWindow(QMainWindow):
         self.browser.urlChanged.connect(self.update_url_entry_field)
         self.browser.loadFinished.connect(self.set_title)
 
+
+
         self.setCentralWidget(self.browser)
         navigation_bar = QToolBar()
         self.addToolBar(navigation_bar)
@@ -32,6 +33,8 @@ class MainWindow(QMainWindow):
         back_button = QAction(QIcon(os.path.join('images', 'back_button.png')), "COFNIJ", self)
         back_button.triggered.connect(self.go_back)
         navigation_bar.addAction(back_button)
+
+
 
         forward_button = QAction(QIcon(os.path.join('images', 'go_to_btn.png')), "DO PRZODU", self)
         forward_button.triggered.connect(self.go_forward)
@@ -61,11 +64,13 @@ class MainWindow(QMainWindow):
         settings_button.triggered.connect(self.open_settings)
         navigation_bar.addAction(settings_button)
 
+
         self.show()
         self.addToolBarBreak()
         self.settings_tool_bar = HomePageToolBar.HomePageToolBar()
         self.addToolBar(self.settings_tool_bar)
         self.settings_tool_bar.hide()
+
 
     def load_home_page(self):
         try:
@@ -111,6 +116,11 @@ class MainWindow(QMainWindow):
         else:
             self.settings_tool_bar.hide()
 
+
+
+
+
+
     def set_title(self):
         title = self.browser.page().title()
         self.setWindowTitle('{} - {}'.format(title, self.window_title))
@@ -118,5 +128,7 @@ class MainWindow(QMainWindow):
     def on_exit(self):
         exit()
 
+
     def __del__(self):
         print('del')
+

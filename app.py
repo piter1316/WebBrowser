@@ -6,4 +6,5 @@ from MainWindow import MainWindow
 
 app = QApplication(sys.argv)
 window = MainWindow()
+
 app.exec_()
