@@ -6,14 +6,13 @@ from PyQt5.QtGui import *
 from PyQt5.QtWebEngineWidgets import *
 from PyQt5.QtWidgets import *
 
-#from NavBar import NavBar
-from SettingsWindow import SettingsWindow
-
+import HomePageToolBar
 
 class MainWindow(QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
+
         self.window_title = "FLAME HOUND"
         self.setWindowTitle(self.window_title)
         self.setWindowIcon(QIcon(os.path.join('images', 'logo.png')))
@@ -65,15 +64,12 @@ class MainWindow(QMainWindow):
         settings_button.triggered.connect(self.open_settings)
         navigation_bar.addAction(settings_button)
 
-        self.settings_window = SettingsWindow()
 
-        # settings_bar = NavBar()
-        # self.addToolBar(settings_bar)
-        #settings_bar.hide()
-
-
-        #settings_bar.addAction(settings_button)
-
+        self.show()
+        self.addToolBarBreak()
+        self.settings_tool_bar = HomePageToolBar.HomePageToolBar()
+        self.addToolBar(self.settings_tool_bar)
+        self.settings_tool_bar.hide()
 
 
     def load_home_page(self):
@@ -114,7 +110,16 @@ class MainWindow(QMainWindow):
         self.browser.setUrl(QUrl(self.load_home_page()))
 
     def open_settings(self):
-        self.settings_window.show()
+
+        if self.settings_tool_bar.isHidden():
+            self.settings_tool_bar.show()
+        else:
+            self.settings_tool_bar.hide()
+
+
+
+
+
 
     def set_title(self):
         title = self.browser.page().title()
@@ -132,5 +137,8 @@ class MainWindow(QMainWindow):
 app = QApplication(sys.argv)
 window = MainWindow()
 
-window.show()
+
+
+
+
 app.exec_()
