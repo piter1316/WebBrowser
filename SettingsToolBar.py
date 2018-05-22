@@ -1,8 +1,10 @@
-from PyQt5.QtWidgets import QToolBar, QLabel, QMainWindow, QApplication, QLineEdit, QAction
-import os
-import sys
+from PyQt5 import QtCore
+from PyQt5.QtCore import Qt
 
-class HomePageToolBar(QToolBar):
+from PyQt5.QtWidgets import QToolBar, QLabel, QLineEdit, QAction
+
+
+class SettingsToolBar(QToolBar):
 
 
     def __init__(self):
@@ -10,6 +12,7 @@ class HomePageToolBar(QToolBar):
 
         top_label = QLabel()
         top_label.setText("Ustaw Stronę Domową: ")
+
         self.input = QLineEdit('https://')
         set_button = QAction("USTAW", self)
         set_button.triggered.connect(self.set_new_home_page)
@@ -21,8 +24,9 @@ class HomePageToolBar(QToolBar):
         self.addWidget(top_label)
         self.addWidget(self.input)
         self.addAction(set_button)
-
         self.addAction(test_button)
+        self.setOrientation(Qt.Vertical)
+        self.hide()
 
     def set_new_home_page(self, ):
         home_page_url = self.input.text()
